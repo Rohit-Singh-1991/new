@@ -52,6 +52,7 @@ export async function getBookings() {
     for (const blob of result.blobs) {
       try {
         const result = await get(blob.pathname, { access: "private", useCache: false });
+        if (!result) continue;
         const text = await new Response(result.stream).text();
         out.push(JSON.parse(text) as Booking);
       } catch {
