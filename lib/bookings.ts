@@ -1,0 +1,5 @@
+import {put,list} from "@vercel/blob";
+export type Booking={bookingId:string;name:string;phone:string;email:string;mode:string;amount:number;coupon:string|null;status:string;paymentId?:string;orderId?:string;createdAt:string};
+export async function saveBooking(b:Booking){await put("bookings/"+b.bookingId+".json",JSON.stringify(b),{access:"private",addRandomSuffix:false,contentType:"application/json"});return b}
+export async function getBookings(){const out:Booking[]=[];let cursor:string|undefined;do{const r=await list({prefix:"bookings/",cursor});for(const x of r.blobs){try{const d=await fetch(x.url).then(v=>v.json());out.push(d)}catch{}}cursor=r.hasMore?r.cursor:undefined}while(cursor);return out.sort((a,b)=>b.createdAt.localeCompare(a.createdAt))}
+export function makeBookingId(){const d=new Date().toISOString().slice(0,10).replaceAll("-","");return "AIW-"+d+"-"+Math.random().toString(36).slice(2,8).toUpperCase()}
