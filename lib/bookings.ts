@@ -26,9 +26,9 @@ export async function saveBooking(booking: Booking) {
 }
 
 export async function getBooking(bookingId: string) {
-  const prefix = "bookings/" + bookingId + ".json";
-  const result = await list({ prefix });
-  const blob = result.blobs.find((item) => item.pathname === prefix);
+  const pathname = "bookings/" + bookingId + ".json";
+  const result = await list({ prefix: pathname });
+  const blob = result.blobs.find((item) => item.pathname === pathname);
   if (!blob) return null;
   try {
     return (await fetch(blob.url, { cache: "no-store" })).json() as Promise<Booking>;
@@ -44,7 +44,8 @@ export async function getBookings() {
     const result = await list({ prefix: "bookings/", cursor });
     for (const blob of result.blobs) {
       try {
-        out.push((await fetch(blob.url, { cache: "no-store" })).json() as Promise<Booking> extends Promise<infer T> ? T : never);
+        const booking = (await fetch(blob.url, { cache: "no-store" })).json() as Promise<Booking>;
+        out.push(await booking);
       } catch {
         // Ignore corrupt individual records.
       }
