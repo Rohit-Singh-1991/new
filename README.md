@@ -1,11 +1,36 @@
 # AI Webinar Registration
 
-Standalone Next.js registration app with Razorpay verification, UPI QR, GENZ coupon pricing, unique booking IDs, email receipts, private Vercel Blob storage and a protected /admin booking tracker.
+Standalone Next.js registration app for the 18 October 2026 AI Webinar.
 
-Required Vercel environment variables: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RESEND_API_KEY, EMAIL_FROM, ADMIN_PASSWORD.
+## Current live payment mode
 
-BLOB_READ_WRITE_TOKEN is provisioned by the linked Vercel Blob store.
+Razorpay is retained in the codebase for a future switch-on after merchant KYC approval.
 
-The direct UPI QR can launch a UPI payment, but a generic UPI QR cannot prove payment to the application. Automatic confirmation uses Razorpay verified payment callbacks.
+The live fallback is direct UPI payment to:
 
-Vercel project: ai-webinar. GitHub repository: Rohit-Singh-1991/new.
+- VPA: 9910474663@icici
+- Original price: ₹899
+- GENZ price: ₹499
+
+The application creates a booking before payment, shows QR/UPI payment only after required visitor details are completed, collects the UTR/reference, and keeps payment in manual verification until an administrator confirms the transaction.
+
+## Production flow
+
+Visitor details → booking ID → UPI QR / UPI app → UTR submission → manual verification.
+
+The application stores booking records in the linked private Vercel Blob store.
+
+## Optional future integrations
+
+Razorpay environment variables:
+RAZORPAY_KEY_ID
+RAZORPAY_KEY_SECRET
+RAZORPAY_WEBHOOK_SECRET
+
+Transactional email can be enabled later with the configured email provider.
+
+## Production
+
+Vercel project: ai-webinar
+GitHub repository: Rohit-Singh-1991/new
+Production domain: https://webinar.digicreators.shop/
